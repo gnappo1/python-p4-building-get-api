@@ -19,5 +19,23 @@ db.init_app(app)
 def index():
     return "Index for Game/Review/User API"
 
+@app.route('/games')
+def games():
+    games = []
+    for game in Game.query.all():
+        games.append(game.to_dict())
+    
+    response = make_response(games, 200, {'Content-Type': 'application/json'})
+    return response
+
+@app.route('/games/<int:id>')
+def find_game(id):
+    # game = Game.query.filter_by(id=id).first_or_404()
+    game = Game.query.filter(Game.id==id).first_or_404()
+    
+    response = make_response(game.to_dict(), 200)
+    response.headers = {"Content-Type": "application/json"}
+    return response
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
